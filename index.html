@@ -122,136 +122,130 @@
 
   <script>
     // The monsters and sock
-    var monsters = [
-      "monster1",
-      "monster2",
-      "monster3",
-      "monster4",
-      "monster5",
-      "monster6",
-      "monster7",
-      "monster8",
-      "monster9",
-      "monster10",
-      "monster11",
-      "sock"
-    ];
+      var monsters = [
+        "monster1",
+        "monster2",
+        "monster3",
+        "monster4",
+        "monster5",
+        "monster6",
+        "monster7",
+        "monster8",
+        "monster9",
+        "monster10",
+        "monster11",
+        "sock"
+      ];
 
-    // Get the app element
-    var app = document.querySelector("#app");
+      // Get the app element
+      var app = document.querySelector("#app");
 
-    // The number of revealed monsters
-    var revealed;
+      // The number of revealed monsters
+      var revealed;
 
-    // Shuffle an array
-    var shuffleUp = function (array) {
-      var currentIndex = array.length;
-      var temporaryValue, randomIndex;
+      // Shuffle an array
+      var shuffleUp = function (array) {
+        var currentIndex = array.length;
+        var temporaryValue, randomIndex;
 
-      // Remaining elements to shuffle
-      while (0 !== currentIndex) {
-        // Pick a remaining element
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
+        // Remaining elements to shuffle
+        while (0 !== currentIndex) {
+          // Pick a remaining element
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex -= 1;
 
-        // Swap it out with the current element
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-      }
-      return array;
-    };
+          // Swap it out with the current element
+          temporaryValue = array[currentIndex];
+          array[currentIndex] = array[randomIndex];
+          array[randomIndex] = temporaryValue;
+        }
+        return array;
+      };
 
-    // Render the grid of monsters to the game board
-    var renderMonsters = function () {
-      // Reset the number of monsters that have been revealed
-      revealed = 0;
+      // Render the grid of monsters to the game board
+      var renderMonsters = function () {
+        // Reset the number of monsters that have been revealed
+        revealed = 0;
 
-      // shuffle the monsters array
-      shuffleUp(monsters);
+        // shuffle the monsters array
+        shuffleUp(monsters);
 
-      // Create the HTML and inject it into the DOM
-      // A button element is focusable and conveys to screen readers that it can be clicked
-      // The data-monster-id stores the index of the monster in our array
-      app.innerHTML =
-        "<h3>Click on a door to reveal a monster. Try not to find the sock.</h3>" +
-        '<div class="cell">' +
-        monsters
-          .map(function (monster, index) {
-            var html =
-              '<div class="grid">' +
-              '<button data-monster-id="' +
-              index +
-              '">' +
-              '<img alt="Click on the door to see what\'s behind it" src="door.svg">' +
-              "</button>" +
-              "</div>";
-            return html;
-          })
-          .join("") +
-        "</div>";
-    };
+        // Create the HTML
+        app.innerHTML =
+          "<h3>Click on a door to reveal a monster. Try not to find the sock.</h3>" +
+          '<div class="cell">' +
+          monsters
+            .map(function (monster, index) {
+              var html =
+                '<div class="grid">' +
+                '<button data-monster-id="' +
+                index +
+                '">' +
+                '<img alt="Click on the door to see what\'s behind it" src="door.svg">' +
+                "</button>" +
+                "</div>";
+              return html;
+            })
+            .join("") +
+          "</div>";
+      };
 
-    // Reset the UI when the player loses
-    var resetLoser = function () {
-      app.innerHTML =
-        '<iframe width="100%" height="400" src="https://www.youtube.com/embed/MvsU04Oj188" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>' +
-        "<h2>This is a 2319 in progress. Keep the area clear. Coming through. Watch yourself.</h2>" +
-        '<button type="button" data-monster-restart>Press to reset game.</button>';
-    };
+      // Reset the UI when the player loses
+      var resetLoser = function () {
+        app.innerHTML =
+          '<iframe width="100%" height="400" src="https://www.youtube.com/embed/MvsU04Oj188" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>' +
+          "<h2>This is a 2319 in progress. Keep the area clear. Coming through. Watch yourself.</h2>" +
+          '<button type="button" data-monster-restart>Click to reset game.</button>';
+      };
 
-    // Reset the UI when the player wins
-    var resetWinner = function () {
-      app.innerHTML =
-        '<img alt="" src="https://media.giphy.com/media/1242bJFCbb3FxC/giphy.gif">' +
-        "<h2>You won!</h2>" +
-        "<p>You found all of the monsters. You are a winner!</p>" +
-        '<button type="button" data-monster-restart>Start Game Again</button>';
-    };
+      // Reset the UI when the player wins
+      var resetWinner = function () {
+        app.innerHTML =
+          '<img alt="Monsters University party scene with Mike Wazowski as a glitter ball." src="https://media.giphy.com/media/1242bJFCbb3FxC/giphy.gif">' +
+          "<h2>You won!</h2>" +
+          "<p>You found all of the monsters. You are a winner!</p>" +
+          '<button type="button" data-monster-restart>Start Game Again</button>';
+      };
 
-    // Handle click events
-    var clickHandler = function (event) {
-      // If the start again button was clicked, reset the UI. End the callback function
-      if (event.target.hasAttribute("data-monster-restart")) {
-        renderMonsters();
-        return;
-      }
+      // Handle click events
+      var clickHandler = function (event) {
+        // If the start again button was clicked, reset the UI. End the callback function
+        if (event.target.hasAttribute("data-monster-restart")) {
+          renderMonsters();
+          return;
+        }
 
-      // Check if the clicked element or it's parent has a data-monster-id attribute
-      // If not, it's not a monster. Return and stop running the callback function
-      var monster = event.target.closest("[data-monster-id]");
-      if (!monster) return;
+        // Check if the element or the parent has a data attribute, if not, it's not a monster.
+        var monster = event.target.closest("[data-monster-id]");
+        if (!monster) return;
 
-      // Get the monster's index in the array
-      var id = monster.getAttribute("data-monster-id");
+        // Get the monster's index in the array
+        var id = monster.getAttribute("data-monster-id");
 
-      // If the opened door reveals a sock, render the lost UI and then, end the callback function
-      if (monsters[id] === "sock") {
-        resetLoser();
-        return;
-      }
+        // If the opened door reveals a sock, render the lost UI, then end the callback function
+        if (monsters[id] === "sock") {
+          resetLoser();
+          return;
+        }
 
-      // Update the HTML for the button's parent element
-      // This will replace the button so that the content can't be clicked again
-      // We'll use the id to get the monster from our shuffleUpd array
-      monster.parentNode.innerHTML =
-        '<img alt="' + monsters[id] + '" src="' + monsters[id] + '.svg">';
+        // Update the HTML for the button's parent element. This won't allow this to be clicked again.
+        monster.parentNode.innerHTML =
+          '<img alt="' + monsters[id] + '" src="' + monsters[id] + '.svg">';
 
-      // Increase the number of monsters who have been revealed by 1
-      revealed++;
+        // Increase the number of monsters found by 1
+        revealed++;
 
-      // If the number of monsters revealed is equal to the total number (-1 for the sock)
-      // then all monsters have been revealed and we can render the win UI
-      if (revealed === monsters.length - 1) {
-        resetWinner();
-      }
-    };
+        // If the number of monsters found = the total number - the sock, then all monsters have been found and render the win UI
+        if (revealed === monsters.length - 1) {
+          resetWinner();
+        }
+      };
 
-    // Render the starting game board
-    renderMonsters();
+      // Render the starting game board
+      renderMonsters();
 
-    // Listen for click events
-    document.addEventListener("click", clickHandler, false);
+      // Listen for click events
+      document.addEventListener("click", clickHandler, false);
   </script>
 </body>
 </html>
